@@ -38,7 +38,7 @@ public class Application {
 
 		OrderService order5 =new OrderService(momoPayment, emailNotification);
 		System.out.println("Order 5:");
-		order5.processOrder("Nguyen Van E","Laptop",30000000);
+		order5.processOrder("Nguyen Van E","Laptop",28000000);
 
 	}
 
