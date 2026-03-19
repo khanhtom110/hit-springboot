@@ -14,6 +14,8 @@ public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
+
+		//Cach lam DI nay van phai tu tao project -> van coupling
 		PaymentMethod momoPayment=new MomoPayment();
 		PaymentMethod cashPayment =new CashPayment();
 		PaymentMethod bankTransferPayment =new BankTransferPayment();
