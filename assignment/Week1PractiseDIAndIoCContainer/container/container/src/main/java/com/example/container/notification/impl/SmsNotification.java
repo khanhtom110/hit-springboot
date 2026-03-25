@@ -1,6 +1,6 @@
-package com.example.container.notification;
+package com.example.container.notification.impl;
 
-import com.example.container.Interface.NotificationService;
+import com.example.container.notification.NotificationService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 

@@ -1,8 +1,7 @@
-package com.example.container.Interface;
+package com.example.container.payment;
 
 import org.springframework.stereotype.Component;
 
-@Component
 public interface PaymentMethod {
     void pay(double amount);
     String getMethodName();

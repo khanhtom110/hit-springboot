@@ -1,6 +1,6 @@
-package com.example.container.payment;
+package com.example.container.payment.impl;
 
-import com.example.container.Interface.PaymentMethod;
+import com.example.container.payment.PaymentMethod;
 import org.springframework.stereotype.Component;
 
 @Component
