@@ -14,8 +14,6 @@ public class Demolession02Application {
 
 		SpringApplication.run(Demolession02Application.class, args);
 
-		InitializeData.init();
-
 	}
 
 

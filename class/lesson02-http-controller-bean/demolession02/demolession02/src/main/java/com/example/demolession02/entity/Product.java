@@ -1,7 +1,13 @@
 package com.example.demolession02.entity;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class Product {
     private int id;
+
+    @NotBlank(message = "Ten khong duoc de trong")
+    @Size(min = 2, max = 50, message = "Tên phải từ 2 đến 50 ký tự")
     private String name;
     private double price;
 

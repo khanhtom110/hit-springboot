@@ -13,7 +13,6 @@ public class InitializeData implements CommandLineRunner {
 
     private ApplicationContext context;
 
-    @Autowired
     public InitializeData(ApplicationContext context) {
         this.context = context;
     }
