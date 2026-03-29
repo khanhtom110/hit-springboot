@@ -1,59 +1,62 @@
 package com.example.demolession02.service;
 
-import com.example.demolession02.InitializeData;
+import com.example.demolession02.dto.request.ProductCreationRequest;
+import com.example.demolession02.exception.ResourceNotFoundException;
 import com.example.demolession02.model.Product;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProductService {
-    List<Product> products=InitializeData.getProducts();
+    private final List<Product> products= new ArrayList<>();
+    int idNext=1;
 
     public List<Product> findAll() {
-        return InitializeData.getProducts();
+        return products;
     }
 
 
     public Product getById(int id) {
-        for(Product product:InitializeData.getProducts()){
-            if(product.getId()==id){
-                return product;
-            }
-        }
-        return null;
+        return products.stream()
+                .filter(product -> product.getId()==id)
+                .findFirst()
+                .orElseThrow(() ->  new ResourceNotFoundException("Product","id",id));
     }
 
-    public Product save(Product product) {
-        InitializeData.getProducts().add(product);
+    public Product create(ProductCreationRequest request) {
+        Product product=new Product();
+        product.setId(idNext++);
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        products.add(product);
         return product;
     }
 
-    public boolean existsById(int id) {
-        for(Product product:InitializeData.getProducts()){
-            if (product.getId()==id){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public int findById(int id) {
-        for(int i=0;i<InitializeData.getProducts().size();i++){
-            if (InitializeData.getProducts().get(i).getId()==id){
+        for(int i=0;i<products.size();i++){
+            if (products.get(i).getId()==id){
                 return i;
             }
         }
-        return -1;
+        throw new ResourceNotFoundException("Product","id",id);
     }
 
-    public Product updateProduct(int index, Product product) {
-        InitializeData.getProducts().set(index,product);
-        return InitializeData.getProducts().get(index);
+    public Product updateProduct(int id, ProductCreationRequest request) {
+        boolean isExists=products.stream()
+                .anyMatch(product -> product.getId()==id);
+        Product product=new Product();
+        product.setId(idNext++);
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        int index=findById(id);
+        products.set(index,product);
+        return product;
     }
 
     public void delete(int id) {
         int index=findById(id);
-        InitializeData.getProducts().remove(index);
+        products.remove(index);
     }
 }

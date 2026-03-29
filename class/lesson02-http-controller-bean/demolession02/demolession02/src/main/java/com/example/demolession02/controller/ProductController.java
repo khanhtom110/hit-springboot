@@ -1,5 +1,7 @@
 package com.example.demolession02.controller;
 
+import com.example.demolession02.dto.request.ProductCreationRequest;
+import com.example.demolession02.dto.response.ApiResponse;
 import com.example.demolession02.model.Product;
 import com.example.demolession02.service.ProductService;
 import jakarta.validation.Valid;
@@ -13,57 +15,42 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(){
-        List<Product> products= productService.findAll();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<ApiResponse<List<Product>>> getAllProducts(){
+        return ResponseEntity
+                .ok(ApiResponse.success(productService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable @Min(1) int id){
-        Product product= productService.getById(id);
-
-        if(product==null){
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(null);
-        }
-
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ApiResponse<Product>> getProduct(@PathVariable int id){
+        return ResponseEntity
+                .ok(ApiResponse.success(productService.getById(id)));
     }
 
     @PostMapping()
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product){
-        Product saved =productService.save(product);
+    public ResponseEntity<ApiResponse<Product>> create(@Valid @RequestBody ProductCreationRequest request){
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(saved);
+                .body(ApiResponse.success(productService.create(request)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable int id,@RequestBody Product product){
-        boolean isExisted=productService.existsById(id);
-        if(!isExisted){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        int index=productService.findById(id);
-        if(index==-1){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(productService.updateProduct(index,product));
+    public ResponseEntity<ApiResponse<Product>> update(@PathVariable int id,
+                                                       @Valid @RequestBody ProductCreationRequest request){
+        return ResponseEntity
+                .ok(ApiResponse.success(productService.updateProduct(id,request)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id){
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable int id){
         productService.delete(id);
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+                .ok(ApiResponse.success());
     }
 }
