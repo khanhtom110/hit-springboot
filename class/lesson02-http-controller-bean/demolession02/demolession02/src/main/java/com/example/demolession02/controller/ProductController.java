@@ -1,6 +1,6 @@
 package com.example.demolession02.controller;
 
-import com.example.demolession02.entity.Product;
+import com.example.demolession02.model.Product;
 import com.example.demolession02.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

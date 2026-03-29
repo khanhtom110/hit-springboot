@@ -1,8 +1,7 @@
 package com.example.demolession02.service;
 
 import com.example.demolession02.InitializeData;
-import com.example.demolession02.entity.Product;
-import org.springframework.http.ResponseEntity;
+import com.example.demolession02.model.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

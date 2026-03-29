@@ -1,4 +1,4 @@
-package com.example.demolession02.entity;
+package com.example.demolession02.model;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

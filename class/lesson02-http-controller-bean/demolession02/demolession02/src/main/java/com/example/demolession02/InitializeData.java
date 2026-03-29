@@ -1,6 +1,6 @@
 package com.example.demolession02;
 
-import com.example.demolession02.entity.Product;
+import com.example.demolession02.model.Product;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
