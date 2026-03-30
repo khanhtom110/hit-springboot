@@ -76,11 +76,11 @@ public class Student {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public double getGpa() {
+    public Double getGpa() {
         return gpa;
     }
 
-    public void setGpa(double gpa) {
+    public void setGpa(Double gpa) {
         this.gpa = gpa;
     }
 
