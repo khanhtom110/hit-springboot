@@ -23,10 +23,10 @@ public class ApiResponse<T> {
     }
 
     public static <T> ApiResponse<T> success(T data){
-        return new ApiResponse<>(200,"Thành công");
+        return new ApiResponse<>(200,"Thành công",data);
     }
     public static <T> ApiResponse<T> created(T data){
-        return new ApiResponse<>(201,"Tạo thành công");
+        return new ApiResponse<>(201,"Tạo thành công",data);
     }
     public static <T> ApiResponse<T> error(int code,String message){
         return new ApiResponse<>(code,message);
