@@ -11,6 +11,7 @@ import vn.edu.khanhtom.StudentManagement.model.Student;
 import vn.edu.khanhtom.StudentManagement.service.StudentService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/students")
@@ -22,7 +23,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Student>>> getAll(){
+    public ResponseEntity<ApiResponse<Map<Long,Student>>> getAll(){
         return ResponseEntity.ok(ApiResponse.success(studentService.getAllStudents()));
     }
 
@@ -51,12 +52,12 @@ public class StudentController {
     }
 
     @GetMapping("/major/{major}")
-    public ResponseEntity<ApiResponse<List<Student>>> getByMajor(@PathVariable String major){
+    public ResponseEntity<ApiResponse<Map<Long,Student>>> getByMajor(@PathVariable String major){
         return ResponseEntity.ok(ApiResponse.success(studentService.getStudentsByMajor(major)));
     }
 
     @GetMapping("/honors")
-    public ResponseEntity<ApiResponse<List<Student>>> getHonors(){
+    public ResponseEntity<ApiResponse<Map<Long,Student>>> getHonors(){
         return ResponseEntity.ok(ApiResponse.success(studentService.getHonorStudents()));
     }
 }

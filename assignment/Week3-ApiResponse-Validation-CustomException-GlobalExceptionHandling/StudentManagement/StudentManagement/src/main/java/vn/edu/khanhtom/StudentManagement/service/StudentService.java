@@ -8,34 +8,38 @@ import vn.edu.khanhtom.StudentManagement.exception.ResourceNotFoundException;
 import vn.edu.khanhtom.StudentManagement.model.Student;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    private final List<Student> students=new ArrayList<>();
+    private final Map<Long,Student> students=new HashMap<>();
     private Long nextId=1L;
 
-    public List<Student> getAllStudents(){
+    public Map<Long, Student> getAllStudents(){
         return students;
     }
 
     public Student getStudentById(Long id){
-        return students.stream()
-                .filter(student -> student.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Sinh viên","id",id));
+        Student student= students.get(id);
+        if(student==null){
+            throw new ResourceNotFoundException("Sinh viên","id",id);
+        }
+        return student;
     }
 
     public Student createStudent(CreateStudentRequest request){
         //Check trung studentCode
-        boolean codeExists=students.stream()
+        boolean codeExists=students.values().stream()
                 .anyMatch(student -> student.getStudentCode().equals(request.getStudentCode()));
         if(codeExists){
             throw new DuplicateResourceException("Sinh viên","mã sinh viên",request.getStudentCode());
         }
 
         //Check trung email
-        boolean emailExists=students.stream()
+        boolean emailExists=students.values().stream()
                 .anyMatch(student -> student.getEmail().equals(request.getEmail()));
         if(emailExists){
             throw new DuplicateResourceException("Sinh viên","email",request.getEmail());
@@ -52,20 +56,15 @@ public class StudentService {
         student.setMajor(request.getMajor());
         student.setYear(request.getYear());
 
-        students.add(student);
+        students.put(student.getId(),student);
         return student;
     }
 
     public Student updateStudent(Long id, UpdateStudentRequest request){
         Student student=getStudentById(id);
 
-        int index= getIndexById(id);
-        if(index==-1){
-            throw new ResourceNotFoundException("Sinh viên","id",id);
-        }
-
         //Check trung email cua student moi
-        boolean emailExists=students.stream()
+        boolean emailExists=students.values().stream()
                 .anyMatch(s -> s.getEmail().equals(request.getEmail()) && !s.getId().equals(id));
         if(emailExists){
             throw new DuplicateResourceException("Sinh viên","email",request.getEmail());
@@ -82,33 +81,30 @@ public class StudentService {
         return student;
     }
 
-    private int getIndexById(Long id) {
-        for(int i=0;i<students.size();i++){
-            if(students.get(i).getId().equals(id)){
-                return i;
-            }
-        }
-        return -1;
-    }
-
     public void deleteStudent(Long id){
-        int index= getIndexById(id);
-        if(index==-1){
+        boolean exists=students.containsKey(id);
+        if(!exists){
             throw new ResourceNotFoundException("Sinh viên","id",id);
         }
 
-        students.remove(index);
+        students.remove(id);
     }
 
-    public List<Student> getStudentsByMajor(String major){
-        return students.stream()
-                .filter(s -> s.getMajor().equals(major))
-                .toList();
+    public Map<Long, Student> getStudentsByMajor(String major){
+        return students.entrySet().stream()
+                        .filter(entry -> entry.getValue().getMajor().equals(major))
+                .collect(Collectors.toMap(
+                        longStudentEntry -> longStudentEntry.getKey(),
+                        longStudentEntry -> longStudentEntry.getValue()
+                ));
     }
 
-    public List<Student> getHonorStudents(){
-        return students.stream()
-                .filter(s->s.getGpa()!=null && s.getGpa()>=3.6)
-                .toList();
+    public Map<Long, Student> getHonorStudents(){
+        return students.entrySet().stream()
+                .filter(s->s.getValue().getGpa()!=null && s.getValue().getGpa()>=3.6)
+                .collect(Collectors.toMap(
+                        longStudentEntry -> longStudentEntry.getKey(),
+                        longStudentEntry -> longStudentEntry.getValue()
+                ));
     }
 }
