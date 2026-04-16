@@ -29,9 +29,9 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(400, "Dữ liệu không hợp lệ", errors));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
-        return ResponseEntity.status(500)
-                .body(ApiResponse.error(500, "Lỗi hệ thống. Vui lòng thử lại sau."));
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
+//        return ResponseEntity.status(500)
+//                .body(ApiResponse.error(500, "Lỗi hệ thống. Vui lòng thử lại sau."));
+//    }
 }
