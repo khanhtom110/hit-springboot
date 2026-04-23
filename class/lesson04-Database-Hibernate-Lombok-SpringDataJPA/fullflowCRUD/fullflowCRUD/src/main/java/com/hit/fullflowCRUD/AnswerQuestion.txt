@@ -1,0 +1,51 @@
+
+1. JPA và Hibernate khác nhau như thế nào? Tại sao không dùng trực tiếp Hibernate mà dùng JPA?
+-> Sự khác biệt: JPA (Java Persistence API) là một bản thiết kế (Specification), một bộ quy tắc. Hibernate là một cài đặt cụ thể (Implementation) của bản thiết kế đó.
+
+
+2. spring.jpa.hibernate.ddl-auto=update và create khác nhau thế nào? Khi nào dùng cái nào?
+->create: Xóa toàn bộ bảng cũ và tạo lại bảng mới mỗi khi ứng dụng khởi động. Dữ liệu sẽ mất sạch.
+
+update: Chỉ thay đổi cấu trúc bảng (thêm cột, đổi kiểu dữ liệu) dựa trên Entity mà không xóa dữ liệu cũ. Nó không xóa các cột thừa nếu bạn xóa field trong code.
+
+3. Tại sao không khuyến nghị dùng @Data cho JPA Entity?
+->Lombok @Data bao gồm @ToString, @EqualsAndHashCode, và @RequiredArgsConstructor.
+
+Vòng lặp vô tận (Infinite Loop): Nếu hai Entity có quan hệ hai chiều (bi-directional), @ToString và @EqualsAndHashCode sẽ gọi lẫn nhau dẫn đến StackOverflowError
+
+4. FetchType.LAZY và FetchType.EAGER khác nhau thế nào? Khi nào dùng LAZY?
+->EAGER (Tham lam): Khi lấy Entity chính, Hibernate sẽ lấy luôn các Entity liên quan bằng một câu lệnh JOIN.
+
+LAZY (Lười biếng): Chỉ khi nào bạn gọi getter của list liên quan, Hibernate mới thực hiện thêm một câu query để lấy dữ liệu đó.
+
+Khi nào dùng LAZY: Luôn ưu tiên dùng LAZY. Nó giúp tránh việc load dữ liệu khổng lồ không cần thiết, tối ưu bộ nhớ và tốc độ. Chỉ dùng EAGER khi bạn chắc chắn 100% luôn cần dữ liệu liên quan ở mọi nơi.
+
+5. Foreign Key nằm ở bảng nào trong quan hệ @OneToMany?
+-> Foreign Key nằm ở đâu? Trong quan hệ @OneToMany, Foreign Key luôn nằm ở bảng "Many" (bảng con).
+
+mappedBy dùng làm gì? Nó đánh dấu phía nào là "phía bị động" (Inverse side). Nó bảo với Hibernate: "Tôi không giữ khóa ngoại, hãy nhìn sang thuộc tính được định nghĩa ở phía bên kia".
+
+Đặt ở phía nào? Luôn đặt ở phía One (trong @OneToMany).
+
+6. mappedBy dùng để làm gì? Đặt ở phía nào?
+7. CascadeType.ALL có ý nghĩa gì? Khi nào nên và không nên dùng?
+-> Ý nghĩa: Mọi thao tác (Persist, Merge, Remove, Refresh, Detach) thực hiện trên Entity cha sẽ được tự động áp dụng lên các Entity con liên quan.
+
+Nên dùng: Khi quan hệ là cha-con chặt chẽ (ví dụ: Order và OrderLineItem). Xóa Order thì chắc chắn phải xóa các Item đi kèm.
+
+Không nên dùng: Khi các Entity có vòng đời độc lập hoặc quan hệ lỏng lẻo (ví dụ: User và Role). Xóa User mà xóa luôn Role là thảm họa.
+
+8. Derived Query findByNameContainingAndAgeGreaterThan sẽ sinh SQL gì?
+-> SELECT * FROM users
+WHERE name LIKE '%?%' 
+AND age > ?;
+
+
+
+9. @RequiredArgsConstructor thay thế được @Autowired như thế nào?
+-> Spring khuyến nghị dùng Constructor Injection thay vì Field Injection (@Autowired trên biến).
+Khi bạn dùng @RequiredArgsConstructor của Lombok, nó sẽ tạo ra một constructor chứa tất cả các trường được đánh dấu là final
+
+10. Khi nào dùng Derived Query, khi nào dùng @Query?
+-> Derived Query	Cho các truy vấn đơn giản, ít điều kiện (ví dụ: findByEmail). Code cực sạch và nhanh.
+@Query (JPQL/Native)	Khi truy vấn phức tạp, cần JOIN nhiều bảng, dùng các hàm tính toán của DB, hoặc khi tên phương thức trở nên quá dài và khó đọc (ví dụ: findBy...And...Or...And...).

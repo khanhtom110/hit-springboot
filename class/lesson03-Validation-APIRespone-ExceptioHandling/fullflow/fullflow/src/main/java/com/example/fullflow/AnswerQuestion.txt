@@ -1,0 +1,57 @@
+1. @NotNull, @NotEmpty, @NotBlank khác nhau thế nào? Khi nào dùng cái nào?
+WHAT
+-> 3 anh này đều kiểm tra null
+-> @NotNull sẽ kiểm tra null k kiểm tra size và trim
+-> @NotEmpty sẽ kiểm tra null, size và không kiểm tra trim
+-> @NotBlank kiểm tra null, size và trim
+WHEN
+-> String hay dung @NotBlank
+-> Danh sách hay dung @NotEmpty (do size có thể =0)
+-> Só hay dung @NotNull (số 0 só size -chỉ có số ||null, còn về khoảng trắng thì đã có Interger.parseInt())
+
+2. Tại sao validate @RequestBody dùng @Valid nhưng validate @RequestParam lại cần @Validated ở class level?
+WHAT
+-> @RequestBody là truyền dữ liệu trong body của HTTP Request, dữ liệu dạng JSON.
+   Khi dùng @RequestBody, Spring sử dụng HttpMessageConverter -> biến chuỗi JSON thành một Object Java
+   Mà @Valid để kiểm tra trong lúc convert JSON -> Object
+-> @RequestParam là truyền dữ liệu trên thanh url, dữ liệu dạng key value, thường để lọc
+   Các dữ liệu trên url là dl ng thủy
+HOW
+-> Khi gọi đến các tham số -> sẽ tạo ra các vỏ (proxy) -> ktra các điều kiện như @Min(1) -> false thì trả về exception ConstraintViolationException
+TẠI SAO PHẢI ĐẶT Ở ĐẦU CLASS
+-> Tạo proxy này tốn bộ nhớ -> Chỉ cần mới dùng
+
+3. Tại sao cần chuẩn hóa API Response? Nếu không chuẩn hóa sẽ gặp vấn đề gì?
+-> Để thống nhất về cách giao tiếp với FE
+-> Không chuẩn hóa thì khó bảo trì mở rộng
+-> Ngoài ra, còn là message dev để các anh em BE giao tiếp với nhau với các hệ thống phức tạp
+
+4. Tại sao nên tạo Custom Exception thay vì dùng RuntimeException trực tiếp?
+-> Để linh hoạt hơn trong việc xử lý lỗi, in ra các code hay message để FE||nguoif dùng hiểu
+TẠI SAO JAVA CÓ RẤT NH LỖI MÀ VẪN PHẢI CUSTOM?
+-> Exception đó là lỗi core.
+-> Ngoài ra còn rất nhiều lỗi domain(Lỗi nghiệp vụ), Phục vụ cho lỗi logic nghiệp vụ
+
+5. @ControllerAdvice hoạt động như thế nào? Tại sao giúp code sạch hơn try-catch?
+WHAT
+-> @ControllerAdvice để bắt lỗi của controller 
+-> Khi lỗi ở controller, thay vì văng lỗi ra ngoài thì nó văng vào Advice này
+Tại sao giúp code sạch hơn try-catch?
+-> Đỡ dài, đỡ sót các lỗi không bắt
+-> Ngoài ra, các tầng như sercurity thì không thề ném exception vào @ControllerAdvice
+
+6. Nếu có 2 @ExceptionHandler cùng bắt được 1 exception, Spring chọn handler nào?
+-> Bắt cái nào ở trước 
+SAIIIIII
+-> Bắt cái handler nào là con (cụ thể nhất)
+-> Nếu cả 2 cùng là con thì ưu tiên @Order Nếu cùng mức độ cụ thể, chọn theo @Order của Class @ControllerAdvice.
+
+7. @JsonInclude(JsonInclude.Include.NON_NULL) trong ApiResponse có tác dụng gì?
+-> Bỏ qua chứ không phải XÓA trong ApiResponse các field nào bị null để đỡ rác response hơn
+
+8. Nested validation (validate object lồng nhau) cần thêm gì?
+WHAT
+-> Là quan hệ has-a (Quan hệ Has-A xảy ra khi một Class này chứa một biến tham chiếu đến một Class khác làm thuộc tính (field).)
+-> Nested validation là validate cả các Object con ở phía bên trong 
+CẦN THÊM GÌ?
+-> Thêm annotation @Valid
