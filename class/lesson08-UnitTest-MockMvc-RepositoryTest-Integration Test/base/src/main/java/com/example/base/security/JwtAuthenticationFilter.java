@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -38,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   JwtProvider jwtProvider;
 
-  UserDetailsServiceImpl userDetailsService;
+  UserDetailsService userDetailsService;
 
   InvalidatedTokenRepository invalidatedTokenRepository;
 
@@ -56,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     // [2]. Extract the token from the Authorization header
-    String token = authHeader.substring(7); //Cắt bỏ "Bearer "
+    String token = authHeader.substring(7);
 
     try {
       // [2.1]. Parse the token to extract claims and check if it has been invalidated
@@ -69,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return;
       }
     } catch (ParseException e) {
-      sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.Auth.ERR_MALFORMED_TOKEN);
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, ErrorMessage.Auth.ERR_MALFORMED_TOKEN);
       return;
     }
 
